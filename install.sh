@@ -60,15 +60,21 @@ if [ "$1" != "--no-home" ]; then
     echo "Amazon launcher is protected on this Fire OS build (expected); using the Home redirect"
   fi
 
-  echo "== Enabling the Home button redirect (accessibility service)"
-  SVC="$PKG/$PKG.HomeButtonService"
-  CUR=$("$TV" shell "settings get secure enabled_accessibility_services" | tr -d '\r\n')
-  case "$CUR" in
-    *"$SVC"*) ;;
-    null|"") "$TV" shell "settings put secure enabled_accessibility_services $SVC" ;;
-    *) "$TV" shell "settings put secure enabled_accessibility_services '$CUR:$SVC'" ;;
-  esac
-  "$TV" shell "settings put secure accessibility_enabled 1"
+  SDK=$("$TV" shell 'getprop ro.build.version.sdk' | tr -d '\r\n')
+  if [ "$SDK" -lt 26 ]; then
+    echo "== Enabling Fire OS 6 Home redirect (Usage Stats)"
+    "$TV" shell "appops set $PKG GET_USAGE_STATS allow"
+  else
+    echo "== Enabling the Home button redirect (accessibility service)"
+    SVC="$PKG/$PKG.HomeButtonService"
+    CUR=$("$TV" shell "settings get secure enabled_accessibility_services" | tr -d '\r\n')
+    case "$CUR" in
+      *"$SVC"*) ;;
+      null|"") "$TV" shell "settings put secure enabled_accessibility_services $SVC" ;;
+      *) "$TV" shell "settings put secure enabled_accessibility_services '$CUR:$SVC'" ;;
+    esac
+    "$TV" shell "settings put secure accessibility_enabled 1"
+  fi
 fi
 
 "$TV" shell "am start -n $PKG/.HomeActivity" >/dev/null

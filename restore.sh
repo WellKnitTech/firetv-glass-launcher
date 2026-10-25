@@ -16,6 +16,11 @@ if [ -n "$1" ]; then enable "$1"; exit 0; fi
 grep -v '^#' "$DIR/debloat/disable-list.txt" | grep -v '^$' | while read -r pkg; do enable "$pkg"; done
 
 # Launcher: re-enable Amazon's home screen and make it the default again
+SDK=$("$TV" shell 'getprop ro.build.version.sdk' | tr -d '\r\n')
+if [ "$SDK" -lt 26 ]; then
+  "$TV" shell "am stopservice -n com.ivantrj.glasslauncher/.HomeWatchService" >/dev/null || true
+  "$TV" shell "appops set com.ivantrj.glasslauncher GET_USAGE_STATS default"
+fi
 enable com.amazon.tv.launcher
 enable com.amazon.firehomestarter
 "$TV" shell "cmd package set-home-activity com.amazon.tv.launcher/.ui.HomeActivity_vNext"

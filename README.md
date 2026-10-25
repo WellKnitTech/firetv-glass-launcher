@@ -162,12 +162,29 @@ switched on by `install.sh`). Whenever the Amazon launcher comes to the front (H
 boot, an app exiting), it brings Glass straight back. It only listens to window events from
 the Amazon launcher's package; there's no polling.
 
-Side effects:
+Fire OS 8 side effects:
 
 - The Amazon home screen flashes for about 0.4 s before Glass appears.
 - Fire OS doesn't pass remote key presses to accessibility services, so Home can't be caught earlier.
 - You can't reach the Amazon home screen while it's on. Turn it off with `./restore.sh`, or in
   **Settings > Accessibility**.
+
+### Home on Fire OS 6 (Android 7.1 / API 25)
+
+Some Fire OS 6 builds block third-party accessibility services and ignore the home-activity
+setting. On API 25, Glass instead watches Android's Usage Stats foreground events and opens
+itself when Amazon Home becomes foreground. `install.sh` grants the `GET_USAGE_STATS` app-op;
+this lets Glass read app-usage events, though it only checks the foreground package locally.
+Amazon Home may appear briefly, and Fire OS can delay the redirect for several seconds. The
+watcher starts when Glass opens and after boot. `restore.sh` stops it and resets the app-op.
+
+Verify the redirect on the connected TV with:
+
+```bash
+./tools/test-home-redirect.sh
+```
+
+The check waits up to eight seconds for older Fire OS builds to hand off Home.
 
 ### Why not `adb`
 
