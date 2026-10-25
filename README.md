@@ -13,8 +13,20 @@ hand, and no new apps beyond the launcher.
 
 ## Quick start
 
-You need a Mac on the same Wi-Fi as your Fire TV. To build the launcher you also need
-[Android Studio](https://developer.android.com/studio) (install it and open it once).
+You need a Mac or Linux computer on the same Wi-Fi as your Fire TV. To build the launcher you
+also need [Android Studio](https://developer.android.com/studio) (install it and open it once)
+or another JDK 17+ with the Android SDK.
+
+### Prerequisites
+
+| | macOS | Linux |
+|---|---|---|
+| Shell | Terminal.app | any terminal |
+| Python 3 | [python.org](https://www.python.org/downloads/) or `brew install python` | `sudo apt install python3 python3-venv` (Debian/Ubuntu) or `sudo dnf install python3` (Fedora) |
+| Android Studio / SDK | default SDK: `~/Library/Android/sdk` | default SDK: `~/Android/Sdk` (also checks `/usr/lib/android-sdk`, `/opt/android-sdk`) |
+| Java (for `./install.sh`) | bundled with Android Studio, or any JDK 17+ | same; scripts also look for common Studio JBR paths under `/opt`, `/snap`, Flatpak, and Toolbox |
+
+If `ANDROID_HOME` or `ANDROID_SDK_ROOT` is set, that SDK location is used.
 
 ### 1. On the TV
 
@@ -22,12 +34,12 @@ You need a Mac on the same Wi-Fi as your Fire TV. To build the launcher you also
    You'll see "You are now a developer".
 2. Go back to **Settings > My Fire TV > Developer Options** and turn on **ADB debugging**.
 
-### 2. On your Mac
+### 2. On your computer
 
 1. [Download this project as a ZIP](https://github.com/ivantrj/firetv-glass-launcher/archive/refs/heads/main.zip)
-   and double-click it to unzip.
-2. Open the **Terminal** app, type `cd ` (with a space), drag the unzipped folder into the
-   Terminal window, and press Enter.
+   and unzip it.
+2. Open a terminal, `cd` into the unzipped folder. On macOS you can type `cd ` (with a space),
+   drag the folder into the Terminal window, and press Enter.
 3. Run the setup and follow what it says:
 
    ```bash
@@ -36,6 +48,9 @@ You need a Mac on the same Wi-Fi as your Fire TV. To build the launcher you also
 
    It asks for your TV's IP address and tells you where to find it on the TV. When the TV asks
    **Allow USB debugging?**, tick **Always allow** and choose **OK**.
+
+   If setup fails creating `.venv` on Debian/Ubuntu, install `python3-venv` and run it again:
+   `sudo apt install python3-venv`.
 
 ### 3. Clean up the TV and install Glass
 
@@ -158,8 +173,9 @@ Side effects:
 
 On macOS the stock `adb` binary (and Xcode's Python) can get "No route to host" because of
 Local Network privacy, even with port 5555 open. `tools/tv` uses the `adb-shell` Python package
-instead, and pushes files as base64 chunks through the shell with an md5 check. If plain `adb`
-works for you, the scripts' commands work the same way with `adb shell`.
+instead (works the same on Linux), and pushes files as base64 chunks through the shell with an
+md5 check. If plain `adb` works for you on either OS, the scripts' commands work the same way
+with `adb shell`.
 
 ```bash
 tools/tv shell 'pm list packages -d'
@@ -185,6 +201,8 @@ stop after the first, so every script runs them one at a time.
 | Fire TV Stick 4K (AFTKRT) | Fire OS 8 (Android 11, API 30) | MediaTek |
 
 Other Fire OS 8 sticks should work. If you try one, open an issue or PR with what happened.
+
+Host scripts are written for **macOS and Linux** (POSIX `sh`).
 
 ## Related
 

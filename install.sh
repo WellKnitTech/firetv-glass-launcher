@@ -10,10 +10,28 @@ TV="$DIR/tools/tv"
 PKG=com.ivantrj.glasslauncher
 APK="$DIR/launcher/app/build/outputs/apk/debug/app-debug.apk"
 
-# Use Android Studio's bundled Java when there's no other one
-if ! java -version >/dev/null 2>&1 && [ -z "$JAVA_HOME" ]; then
-  JBR="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
-  [ -d "$JBR" ] && export JAVA_HOME="$JBR"
+# Use Android Studio's bundled Java when there's no other one.
+# macOS: jbr/Contents/Home; Linux: bin/java lives directly under jbr/.
+if ! java -version >/dev/null 2>&1 && [ -z "${JAVA_HOME:-}" ]; then
+  for jbr in \
+    "/Applications/Android Studio.app/Contents/jbr" \
+    /opt/android-studio/jbr \
+    /usr/local/android-studio/jbr \
+    /snap/android-studio/current/jbr \
+    "$HOME/android-studio/jbr" \
+    /var/lib/flatpak/app/com.google.AndroidStudio/current/active/files/extra/android-studio/jbr \
+    "$HOME/.local/share/flatpak/app/com.google.AndroidStudio/current/active/files/extra/android-studio/jbr" \
+    "$HOME/.local/share/JetBrains/Toolbox/apps/android-studio/jbr"
+  do
+    if [ -x "$jbr/Contents/Home/bin/java" ]; then
+      export JAVA_HOME="$jbr/Contents/Home"
+      break
+    fi
+    if [ -x "$jbr/bin/java" ]; then
+      export JAVA_HOME="$jbr"
+      break
+    fi
+  done
 fi
 if [ ! -f "$DIR/launcher/local.properties" ]; then
   echo "Android SDK not set up yet. Run ./setup.sh first."; exit 1
