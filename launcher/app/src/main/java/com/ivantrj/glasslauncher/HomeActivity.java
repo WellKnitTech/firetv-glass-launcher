@@ -19,6 +19,7 @@ import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -99,6 +100,9 @@ public class HomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            startService(new Intent(this, HomeWatchService.class));
+        }
         setContentView(R.layout.activity_home);
         density = getResources().getDisplayMetrics().density;
         prefs = getSharedPreferences("focus", MODE_PRIVATE);

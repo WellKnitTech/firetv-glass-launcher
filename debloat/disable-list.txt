@@ -47,6 +47,12 @@ com.amazon.tahoe
 
 ## Your choices: apps you don't use
 com.hbo.hbonow
+# Streaming apps requested for this TV; IMDb TV is now branded Freevee.
+com.amazon.imdb.tv.android.app
+com.imdb.livingroom.firetv
+com.sling
+com.espn.gtv
+com.tubitv.ott
 com.amazon.tv.livetv
 com.amazon.bueller.music
 com.amazon.bueller.photos
