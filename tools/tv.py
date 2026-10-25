@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tiny ADB client for the TV, built on adb-shell (works around macOS Local
-Network privacy blocking the stock adb binary).
+Network privacy blocking the stock adb binary; also works on Linux).
 
   tv.py shell '<command>'          run one shell command, print output
   tv.py screencap out.png          grab a screenshot from the TV
